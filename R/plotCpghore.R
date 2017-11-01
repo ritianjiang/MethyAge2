@@ -4,6 +4,7 @@
 #' @param grAnno: A GRanges object that is the cpgi&shores file
 #' @param plot: ... bool, plot or not (default: F)
 #' @param len: ... int, The length of cpgi you wanna normalized (default: 1000)
+#' @param win_len: The slide window (default:10)
 #' @export
 #' @return  A dataframe which contains cpgi & shore methylation status. the
 #' @examples
@@ -14,10 +15,10 @@
 #'
 
 setGeneric("plotCpghore",
-           function(object,cpgFile,...){
+           function(object,cpgFile,win_len,...){
              standardGeneric("plotCpghore")})
 setMethod("plotCpghore","GRanges",
-          function(object,cpgFile,plot = F,len = 1000){
+          function(object,cpgFile,plot = F,len = 1000,win_len=10){
             MethAnno<-DMSAnnotate(object,cpgFile)
             MethAnno<-unique(MethAnno)
 
@@ -43,7 +44,7 @@ setMethod("plotCpghore","GRanges",
             totalcpg_app<-data.frame(loc = totalcpg$Group.1
                                      ,meth = apply(totalcpg,MARGIN = 1,FUN = mean))
             if(plot == T){
-              silda<-filter((totalcpg_app[,2])/10,rep(1,10))
+              silda<-filter((totalcpg_app[,2])/win_len,rep(1,win_len))
               silda<-data.frame(loc = totalcpg_app$loc,
                                 meth = silda)
               p<-ggplot(totalcpg_app,aes(loc,meth))

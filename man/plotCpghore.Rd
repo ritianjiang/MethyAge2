@@ -4,7 +4,7 @@
 \alias{plotCpghore}
 \title{The function deals the cpg methylation status}
 \usage{
-plotCpghore(object, cpgFile, ...)
+plotCpghore(object, cpgFile, win_len, ...)
 }
 \arguments{
 \item{object:}{A GRanges object that is the methylation perc file}
@@ -14,6 +14,8 @@ plotCpghore(object, cpgFile, ...)
 \item{plot:}{... bool, plot or not (default: F)}
 
 \item{len:}{... int, The length of cpgi you wanna normalized (default: 1000)}
+
+\item{win_len:}{The slide window (default:10)}
 }
 \value{
 A dataframe which contains cpgi & shore methylation status. the
