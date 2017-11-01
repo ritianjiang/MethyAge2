@@ -7,7 +7,7 @@
 DMSAnnotate(object, grAnno)
 }
 \arguments{
-\item{object:}{A methylDiff/methyBase object}
+\item{object:}{A methylDiff/methyBase/GRanges object}
 
 \item{grAnno:}{A GRanges object}
 }
@@ -19,7 +19,7 @@ The function annotates the methylDiff/methylBase obj.
 }
 \examples{
 data(ExampleAnnotate)
-result<-DMSAnnotate()
+result<-DMSAnnotate(methylDiff.obj, ExampleGencode)
 
 
 
