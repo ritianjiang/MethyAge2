@@ -3,4 +3,6 @@
 export(DMSAnnotate)
 export(fbm)
 export(getMethyVsExpression)
+export(makeMetnAge)
 export(plotCpghore)
+exportClasses(MetnAge)

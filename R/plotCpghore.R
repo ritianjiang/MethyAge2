@@ -43,9 +43,9 @@ setMethod("plotCpghore","GRanges",
 
             totalcpg<-rbind(up_mean,cpg_mean)
             totalcpg<-rbind(totalcpg,down_mean)
-            totalcpg<-aggregate(totalcpg[,-1],by = list(totalcpg$Group.1),FUN = mean)
+            totalcpg<-aggregate(totalcpg[,-1],by = list(totalcpg$Group.1),FUN = median)
             totalcpg_app<-data.frame(loc = as.numeric(totalcpg$Group.1)
-                                     ,meth = apply(totalcpg[,-1],MARGIN = 1,FUN = mean))
+                                     ,meth = apply(totalcpg[,-1],MARGIN = 1,FUN = median))
             if(plot == T){
               silda<-filter((totalcpg_app[,2])/win_len,rep(1,win_len))
               silda<-data.frame(loc = totalcpg_app$loc,
