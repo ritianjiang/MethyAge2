@@ -1,10 +1,7 @@
 # load("/home/owht/KIZ/data/testData/methylation/testMethyperc.RData")
 # test<-data.frame(testAAA)
 
-# result<-data.frame(seqnames = test$seqnames,
-#                    site = test$start,
-#                    p.value = rep(1,nrow(test))
-#                    ,slope = rep(1,nrow(test)))
+
 #
 # sampleInfo<-read.csv("/home/owht/KIZ/data/testData/methylation/Longevity_families_CM_mRNA_WN_mRNA_lncRNA.csv")
 # sampleInfo$expre<-rep(0,nrow(sampleInfo))
@@ -22,6 +19,8 @@
 # result[1,]$p.value = fit$`p-value`[2]
 # result[1,]$slope = full.model$coefficients$fixed[4]
 
+#############################S4 Objects######################
+
 #'This is a stupid DataStructure that storage the sample infomation
 #'and the Methylation perc data
 #'
@@ -35,11 +34,12 @@
 #'@rdname MetnAge-class
 #'@docType class
 
-
-
 setClass("MetnAge",slots = list(MetaInfo = "matrix",
                                 SampleInfo = "data.frame",
                                 locInfo = "data.frame"))
+###############S4 objects END##################################
+
+###############Functions Start###########################
 
 #'This function create the MetnAge object
 #'
@@ -68,10 +68,75 @@ setMethod("makeMetnAge",
           signature(metainfo = "data.frame",sampleinfo = "data.frame"),
           function(metainfo,sampleinfo){
               metainfo1<-t(metainfo[,-(1:5)])
-              locInfo<-metainfo[,1:5]
+              locinfo<-as.data.frame(metainfo[,1:5])
               rownames(metainfo1)<-str_extract_all(rownames(metainfo1),
                                           "\\d+")
               result<-new("MetnAge",MetaInfo = metainfo1,
-                           SampleInfo = sampleinfo)
+                           SampleInfo = sampleinfo,
+                           locInfo=locinfo)
               return(result)
+})
+
+
+
+#This is an invisible(unexport) function. To be the unit of
+#ageMetCorr
+ageM_each<-function(sampleinfo,am,ni){
+  sampleinfo$expre<-am[sampleinfo$sub,ni]
+  null.model<-lme(expre~gender+site,
+                  random = ~1|sub,
+                  data = sampleinfo,method = "ML")
+  full.model<-lme(expre~gender+site+age,
+                  random = ~1|sub,
+                  data = sampleinfo,method = "ML")
+  fit<-anova(null.model,full.model)
+  result<-c(fit$`p-value`[2],full.model$coefficients$fixed[4])
+  return(result)
+}
+
+
+#'@title ageMethCorr
+#'@description  This function calculate the roles that age played in methylation
+#'              status.we used the mixed linear effect model to calculate thep-value and slope of age by nlme. The null model is
+#'              \code{Methperc~gender+site+(1|sub)} and the full mode is
+#'              \code{Methperc~gender+site+age+(1|sub)}. To get the LRT, we
+#'              adapt the "ML"  instead of "REML" to estimate paramaters
+#'
+#'@export
+#'@param objects MetnAge object
+#'@param cors a numeric value of numbers of cores you wanna use. (default:1)
+#'
+#'@return a dataframe contains site location info and p-value and
+#'@rdname ageMetCorr-method
+#'@docType methods
+#'@examples
+#'data("ExampleMethnAge")
+#'testobj<-makeMetnAge(test,sampleInfo)
+#'cls<-ageMetCorr(testobj,cors = 2)
+#'
+setGeneric("ageMetCorr",function(object,cors){
+  standardGeneric("ageMetCorr")
+})
+
+setMethod("ageMetCorr","MetnAge",function(object,cors=1){
+    slmSampleInfo<-object@SampleInfo
+    slmaM<-object@MetaInfo
+    slmLoc<-object@locInfo
+
+    if(cors>1){
+      cl<-makeForkCluster(cors)
+      a<-pblapply(1:ncol(slmaM),FUN=ageM_each,
+                  sampleinfo = slmSampleInfo,
+                  am = slmaM,cl = cl)
+      stopCluster(cl)
+    }
+    else{a<-lapply(1:ncol(slmaM),FUN=ageM_each,
+                   sampleinfo = slmSampleInfo,
+                   am = slmaM)}
+    a<-do.call(rbind,a)
+    result<-cbind(slmLoc,a)
+    colnames(result)[6]<-"pValue"
+    colnames(result)[7]<-"slope"
+    return(result)
+
 })
