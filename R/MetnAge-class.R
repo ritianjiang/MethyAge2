@@ -67,6 +67,7 @@ setGeneric("makeMetnAge",function(metainfo,sampleinfo){
 setMethod("makeMetnAge",
           signature(metainfo = "data.frame",sampleinfo = "data.frame"),
           function(metainfo,sampleinfo){
+              sampleinfo$sub<-as.character(sampleinfo$sub) #avoid out Range
               metainfo1<-t(metainfo[,-(1:5)])
               locinfo<-as.data.frame(metainfo[,1:5])
               rownames(metainfo1)<-str_extract_all(rownames(metainfo1),
