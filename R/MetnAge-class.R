@@ -84,13 +84,14 @@ setMethod("makeMetnAge",
 #ageMetCorr
 ageM_each<-function(sampleinfo,am,ni){
   sampleinfo$expre<-am[sampleinfo$sub,ni]
-  null.model<-lme(expre~gender+site,
+  null.model<-try(lme(expre~gender+site,
                   random = ~1|sub,
-                  data = sampleinfo,method = "ML")
-  full.model<-lme(expre~gender+site+age,
+                  data = sampleinfo,method = "ML"))
+  full.model<-try(lme(expre~gender+site+age,
                   random = ~1|sub,
-                  data = sampleinfo,method = "ML")
-  fit<-anova(null.model,full.model)
+                  data = sampleinfo,method = "ML"))
+
+  fit<-try(anova(null.model,full.model),silent = T)
   result<-c(fit$`p-value`[2],full.model$coefficients$fixed[4])
   return(result)
 }
