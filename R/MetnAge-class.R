@@ -92,7 +92,8 @@ ageM_each<-function(sampleinfo,am,ni){
                   data = sampleinfo,method = "ML"))
 
   fit<-try(anova(null.model,full.model),silent = T)
-  result<-c(fit$`p-value`[2],full.model$coefficients$fixed[4])
+  if(class(fit) == "try-error"){result<-c(NA,NA)} #avoid "$" error
+  else{result<-c(fit$`p-value`[2],full.model$coefficients$fixed[4])}
   return(result)
 }
 
