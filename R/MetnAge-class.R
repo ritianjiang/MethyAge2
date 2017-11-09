@@ -109,7 +109,7 @@ ageM_each<-function(sampleinfo,am,ni){
 #'@param objects MetnAge object
 #'@param cors a numeric value of numbers of cores you wanna use. (default:1)
 #'
-#'@return a dataframe contains site location info and p-value and
+#'@return a dataframe contains site location info and p-value and slope AND Q-VALUE
 #'@rdname ageMetCorr-method
 #'@docType methods
 #'@examples
@@ -140,6 +140,7 @@ setMethod("ageMetCorr","MetnAge",function(object,cors=1){
     result<-cbind(slmLoc,a)
     colnames(result)[6]<-"pValue"
     colnames(result)[7]<-"slope"
+    result$qValue<-p.adjust(result[,6],method = "fdr",n = nrow(result))
     return(result)
 
 })
