@@ -3,6 +3,7 @@
 export(DMSAnnotate)
 export(ageMetCorr)
 export(fbm)
+export(findemQTL)
 export(getMethyVsExpression)
 export(makeMetnAge)
 export(plotCpghore)

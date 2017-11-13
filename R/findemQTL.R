@@ -54,7 +54,7 @@
 
 #This is an inherent function to select the most correlated gene
 #for each CpG site
-testFun<-function(j,met,exp,site){ #based on CpG site
+testFun<-function(j,met,exp,site,qFlag = F){ #based on CpG site
   slmLoc<-site
   # result<-data.frame(Gene = as.character(exp$X), ##noticing
   #                    p = rep(0,nrow(exp)),
@@ -63,7 +63,12 @@ testFun<-function(j,met,exp,site){ #based on CpG site
                 Met = met[j,],Exp = exp)
   ptest<-do.call(rbind,ptest)
   result<-na.omit(ptest)
-  result$p<-p.adjust(result$p)
+  colnames(result)<-c("Gene","p","slope")
+  result<-data.frame(result,stringsAsFactors = F)
+
+  if(qFlag==T){
+     result$p<-p.adjust(result$p)}
+
   result<-result[order(result$p,decreasing = F),]
   result<-cbind(site[j,],result[1,])
   return(result);
@@ -79,22 +84,43 @@ corR<-function(index,Met,Exp){ #based on Expression genes
   fit<-cor.test(as.numeric(Met),
                 as.numeric(Exp[index,2:(ncol(Exp)-1)]),
                 method = "pearson")
-  res<-data.frame(Gene=Exp[index,]$X,
-                  p=fit$p.value,
-                  slope=fit$estimate)
+  res<-c(as.character(Exp[index,]$X),
+         as.numeric(fit$p.value),
+         as.numeric(fit$estimate))
   return(res);
 }
 
-setGeneric("findemQTL",function(met,exp,cors=1,siteFile){
+
+#'@title findemQTL
+#'@description  This function find the potential emQTL by correlation test.
+#'
+#'@export
+#'@param met   a data.frame contains methylation percentation
+#'@param exp   a data.frame contains gene and fpkm(or some others)
+#'             The 1st column is the gene names and the last is chrom
+#'@param cors  a numeric value of numbers of cores you wanna use. (default:1)
+#'@param siteFile  a dataframe contains the CpG site info
+#'@param aFlag logical(default:F). Whether to use FDR correction.
+#'@return a dataframe contains site location info and potential regulated gene
+#'and p-value(or qvalue in fact) and slope
+#'@rdname findemQTL-method
+#'@docType methods
+#'@examples
+#'data("ExampleemQTL")
+#'res<-findemQTL(test[1:20,],chr5,cors = 4,siteFile = siteInfo)
+#'res
+#'
+setGeneric("findemQTL",function(met,exp,cors=1,siteFile,qFlag = F){
   standardGeneric("findemQTL")
 })
 
 setMethod("findemQTL","data.frame",
-          function(met,exp,cors=1,siteFile){
+          function(met,exp,cors=1,siteFile,qFlag){
   if(cors>1){
     cl<-makeForkCluster(cors)
     a<-pblapply(1:nrow(met),FUN=testFun,
                 met = met,exp = exp,site = siteFile,
+                qFlag = qFlag,
                 cl = cl)
     stopCluster(cl)
   }

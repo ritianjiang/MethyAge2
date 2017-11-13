@@ -13,17 +13,18 @@ ageMetCorr(object, cors)
 \item{objects}{MetnAge object}
 }
 \value{
-a dataframe contains site location info and p-value and
+a dataframe contains site location info and p-value and slope AND Q-VALUE
 }
 \description{
 This function calculate the roles that age played in methylation
              status.we used the mixed linear effect model to calculate thep-value and slope of age by nlme. The null model is
-             *\code{Methperc~gender+site+(1|sub)} and the full mode is*
+             \code{Methperc~gender+site+(1|sub)} and the full mode is
              \code{Methperc~gender+site+age+(1|sub)}. To get the LRT, we
              adapt the "ML"  instead of "REML" to estimate paramaters
 }
 \examples{
 data("ExampleMethnAge")
 testobj<-makeMetnAge(test,sampleInfo)
+cls<-ageMetCorr(testobj,cors = 2)
 
 }
