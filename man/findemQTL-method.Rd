@@ -5,7 +5,7 @@
 \alias{findemQTL}
 \title{findemQTL}
 \usage{
-findemQTL(met, exp, cors = 1, siteFile, qFlag = F)
+findemQTL(met, exp, cors = 1, siteFile, qFlag = F, method = "pearson")
 }
 \arguments{
 \item{met}{a data.frame contains methylation percentation}
@@ -17,7 +17,9 @@ The 1st column is the gene names and the last is chrom}
 
 \item{siteFile}{a dataframe contains the CpG site info}
 
-\item{aFlag}{logical(default:F). Whether to use FDR correction.}
+\item{qFlag}{logical(default:F). Whether to use FDR correction.}
+
+\item{method}{whether "spearman" or "pearson}
 }
 \value{
 a dataframe contains site location info and potential regulated gene

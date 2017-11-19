@@ -54,13 +54,13 @@
 
 #This is an inherent function to select the most correlated gene
 #for each CpG site
-testFun<-function(j,met,exp,site,qFlag = F){ #based on CpG site
+testFun<-function(j,met,exp,site,qFlag = F,method = "pearson"){ #based on CpG site
   slmLoc<-site
   # result<-data.frame(Gene = as.character(exp$X), ##noticing
   #                    p = rep(0,nrow(exp)),
   #                    slope = rep(0,nrow(exp)))
   ptest<-lapply(1:nrow(exp),FUN=corR,
-                Met = met[j,],Exp = exp)
+                Met = met[j,],Exp = exp,method=method)
   ptest<-do.call(rbind,ptest)
   result<-na.omit(ptest)
   colnames(result)<-c("Gene","p","slope")
@@ -77,13 +77,14 @@ testFun<-function(j,met,exp,site,qFlag = F){ #based on CpG site
 #This is an inherent function to calculate correlation between A gene
 #and A CpG site
 #for each CpG site
-corR<-function(index,Met,Exp){ #based on Expression genes
+corR<-function(index,Met,Exp,method){ #based on Expression genes
   # result<-data.frame(Gene = as.character(Exp$X), ##noticing
   #                    p = rep(0,nrow(Exp)),
   #                    slope = rep(0,nrow(Exp)))
+  MEth<-method
   fit<-cor.test(as.numeric(Met),
                 as.numeric(Exp[index,2:(ncol(Exp)-1)]),
-                method = "pearson")
+                method = MEth)
   res<-c(as.character(Exp[index,]$X),
          as.numeric(fit$p.value),
          as.numeric(fit$estimate))
@@ -100,7 +101,8 @@ corR<-function(index,Met,Exp){ #based on Expression genes
 #'             The 1st column is the gene names and the last is chrom
 #'@param cors  a numeric value of numbers of cores you wanna use. (default:1)
 #'@param siteFile  a dataframe contains the CpG site info
-#'@param aFlag logical(default:F). Whether to use FDR correction.
+#'@param qFlag logical(default:F). Whether to use FDR correction.
+#'@param method whether "spearman" or "pearson
 #'@return a dataframe contains site location info and potential regulated gene
 #'and p-value(or qvalue in fact) and slope
 #'@rdname findemQTL-method
@@ -110,17 +112,17 @@ corR<-function(index,Met,Exp){ #based on Expression genes
 #'res<-findemQTL(test[1:20,],chr5,cors = 4,siteFile = siteInfo)
 #'res
 #'
-setGeneric("findemQTL",function(met,exp,cors=1,siteFile,qFlag = F){
+setGeneric("findemQTL",function(met,exp,cors=1,siteFile,qFlag = F,method="pearson"){
   standardGeneric("findemQTL")
 })
 
 setMethod("findemQTL","data.frame",
-          function(met,exp,cors=1,siteFile,qFlag){
+          function(met,exp,cors=1,siteFile,qFlag,method){
   if(cors>1){
     cl<-makeForkCluster(cors)
     a<-pblapply(1:nrow(met),FUN=testFun,
                 met = met,exp = exp,site = siteFile,
-                qFlag = qFlag,
+                qFlag = qFlag,method = method,
                 cl = cl)
     stopCluster(cl)
   }
