@@ -69,12 +69,12 @@ testFun<-function(j,met,exp,site,qFlag = F,method = "pearson"){ #based on CpG si
   if(qFlag==T){
      result$p<-p.adjust(result$p)}
 
-  result<-result[order(result$p,decreasing = F),]
-  if(nrow(result[result$p<0.05,])<1){
-    result<-data.frame(chrom = NA,site=NA,Gene=NA,p=NA,slope=NA)
+  laresult<-result[result$p<0.05,]
+  if(nrow(laresult)==0){
+    laresult<-cbind(site[j,],Gene=NA,p=NA,slope=NA)
   }
-  else{result<-cbind(site[j,],result[result$p<0.05,])}
-  return(result);
+  else{laresult<-cbind(site[j,],laresult[laresult$p<0.05,])}
+  return(laresult);
 }
 
 #This is an inherent function to calculate correlation between A gene
