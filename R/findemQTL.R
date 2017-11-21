@@ -70,7 +70,10 @@ testFun<-function(j,met,exp,site,qFlag = F,method = "pearson"){ #based on CpG si
      result$p<-p.adjust(result$p)}
 
   result<-result[order(result$p,decreasing = F),]
-  result<-cbind(site[j,],result[1,])
+  if(nrow(result[result$p<0.05,])<1){
+    result<-data.frame(chrom = NA,site=NA,Gene=NA,p=NA,slope=NA)
+  }
+  else{result<-cbind(site[j,],result[result$p<0.05,])}
   return(result);
 }
 
@@ -131,5 +134,6 @@ setMethod("findemQTL","data.frame",
                 met = met,exp = exp,site = siteFile)
   }
   a<-do.call(rbind,a)
+  a<-na.omit(a)
   return(a);
 })
