@@ -42,8 +42,7 @@ setMethod("findParentage","data.frame",function(DF1,DF2,cors,method){
   }
   a<-do.call(rbind,a)
   colnames(a)<-c("loc","slope","pvalue")
-  a<-as.data.frame(aaa)
-  a<-na.omit(a)
+  a<-as.data.frame(a)
 
   return(a)
 })
