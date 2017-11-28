@@ -2,7 +2,7 @@
 corrSiteEach<-function(i,df1,df2,method){
   cls<-cor.test(x = as.numeric(df1[i,]),
                 y = as.numeric(df2[i,]),method = method)
-  res<-c(rownames(df1[i,]),
+  res<-data.frame(rownames(df1[i,]),
          as.numeric(cls$estimate),
          as.numeric(cls$p.value))
   return(res)
@@ -42,7 +42,6 @@ setMethod("findParentage","data.frame",function(DF1,DF2,cors,method){
   }
   a<-do.call(rbind,a)
   colnames(a)<-c("loc","slope","pvalue")
-  a<-as.data.frame(a)
 
   return(a)
 })
