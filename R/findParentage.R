@@ -40,7 +40,7 @@ setMethod("findParentage","data.frame",function(DF1,DF2,cors,method){
   else{
     a<-lapply(1:nrow(DF1),FUN=corrSiteEach,df1=DF1,df2=DF2,method = method)
   }
-  a<-do.call(rbind,a)
+  a<-rbindlist(a)
   colnames(a)<-c("loc","slope","pvalue")
 
   return(a)
