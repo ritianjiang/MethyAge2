@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Haotian Wang
 Maintainer: Haotian Wang <ritianjiang@gmx.com>
 Description: 
-Depends:methylKit,magrittr
+Depends:methylKit,magrittr,data.table,pbapply
 License: MIT
 Encoding: UTF-8
 LazyData: true
