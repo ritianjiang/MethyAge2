@@ -3,6 +3,7 @@
 export(DMSAnnotate)
 export(ageMetCorr)
 export(fbm)
+export(findDMVS)
 export(findParentage)
 export(findemQTL)
 export(getMethyVsExpression)
