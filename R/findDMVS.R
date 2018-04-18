@@ -40,8 +40,7 @@ slidewindow<-function(x){
 
 findDMVS<-function(methyMatrix){
   chrMatrix<-methyMatrix[methyMatrix %>% rownames
-                         %>% str_sub(1,3) == "chr"
-                         %>% head,]
+                         %>% str_sub(1,3) == "chr",]
   chrMatrix$chr<-(str_split(chrMatrix %>% rownames,
                            pattern = "\\.",n = 3,
                            simplify = T) %>% as.data.frame())$V1 %>% as.character()
@@ -58,6 +57,7 @@ findDMVS<-function(methyMatrix){
     temp<-avMatrix[avMatrix$Group.1 == chrList[i],]
     avg<-slidewindow(temp)
     pp<-rbind(pp,avg)
-    return(pp)
+    #return(pp)
   }
+  return(pp)
 }
