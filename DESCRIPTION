@@ -5,12 +5,10 @@ Version: 0.1.0
 Author: Haotian Wang
 Maintainer: Haotian Wang <ritianjiang@gmx.com>
 Description: 
-Depends:methylKit,magrittr,data.table,pbapply
+Depends: methylKit,magrittr,data.table,pbapply
 License: MIT
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 Imports: Rcpp (>= 0.12.12)
 LinkingTo: Rcpp
-
-

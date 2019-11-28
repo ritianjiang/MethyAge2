@@ -4,8 +4,8 @@
 \alias{employee}
 \title{Generate a employee object.}
 \usage{
-employee(name = "Joe", salary = 5000, union = T, info = data.frame(x =
-  rep(1, 10), y = rep(2, 10)))
+employee(name = "Joe", salary = 5000, union = T,
+  info = data.frame(x = rep(1, 10), y = rep(2, 10)))
 }
 \arguments{
 \item{name}{the name, defalut is "Joe"}

@@ -5,7 +5,8 @@
 \alias{findemQTL}
 \title{findemQTL}
 \usage{
-findemQTL(met, exp, cors = 1, siteFile, qFlag = F, method = "pearson")
+findemQTL(met, exp, cors = 1, siteFile, qFlag = F,
+  method = "pearson")
 }
 \arguments{
 \item{met}{a data.frame contains methylation percentation}
