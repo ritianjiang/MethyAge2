@@ -1,6 +1,6 @@
 #'Plot methylation status across genic regions(or some other features) and their up/down stream.
 #'
-#' @param object: A GRanges object contains the
+#' @param object: A GRanges object contains the methylsites
 #' @param grAnno: A TxDb object containing the features. Please provide the strand info if you are ploting
 #' @param numbin: bin number to split the feature regions we wanna plot
 #' @param wingbin: bin number of the up/down stream
@@ -46,7 +46,9 @@ plotGenic<-function(object,grAnno,numbin,wingbin,upstream=2000,
   anno1$loc<-(anno1$start - anno1$start.1)/(anno1$end - anno1$start.1)
   anno1[anno1$strand=="-",]$loc<- 1-anno1[anno1$strand == "-",]$loc
   anno1<-anno1[,c(5,6,7)]
+  colnames(anno1)[2]<-"score"
   anno1[anno1$gene_id == "Gene Body",]$loc<-anno1[anno1$gene_id == "Gene Body",]$loc %/% (1/numbin)
   anno1[anno1$gene_id != "Gene Body",]$loc<-anno1[anno1$gene_id != "Gene Body",]$loc %/% (1/wingbin)
-  return(anno1)
+  anno2<-aggregate(x = anno1$score,by=list(anno1$gene_id,anno1$loc),FUN=mean)
+  return(anno2)
 }

@@ -8,7 +8,7 @@ plotGenic(object, grAnno, numbin, wingbin, upstream = 2000,
   downstream = 500, scoreColumnName, Strand = FALSE)
 }
 \arguments{
-\item{object:}{A GRanges object contains the}
+\item{object:}{A GRanges object contains the methylsites}
 
 \item{grAnno:}{A TxDb object containing the features. Please provide the strand info if you are ploting}
 
